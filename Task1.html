@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art Gallery</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f5f5f5;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 34px;
+        color: #333;
+        letter-spacing: 1px;
+    }
+
+    /* --- Gallery Grid --- */
+    .gallery {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        max-width: 1100px;
+        margin: auto;
+    }
+
+    figure {
+        background: white;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid #ddd; /* Thin frame */
+        transition: 0.3s;
+        cursor: pointer;
+    }
+
+    figure:hover {
+        transform: scale(1.03);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    figure img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 6px;
+    }
+
+    figcaption {
+        text-align: center;
+        margin-top: 8px;
+        font-size: 16px;
+        color: #444;
+    }
+
+    /* --- Modal (Full Image View) --- */
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(4px);
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 1000;
+        padding: 20px;
+    }
+
+    .modal img {
+        width: 65%;
+        max-height: 70vh;
+        object-fit: contain;
+        border-radius: 10px;
+        border: 4px solid white;
+    }
+
+    .modal-caption {
+        color: white;
+        font-size: 22px;
+        margin: 15px;
+    }
+
+    .controls {
+        display: flex;
+        gap: 20px;
+        margin-top: 15px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 18px;
+        border: none;
+        cursor: pointer;
+        background: white;
+        border-radius: 6px;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #ddd;
+    }
+
+    #closeBtn {
+        margin-top: 20px;
+        background: #ff4d4d;
+        color: white;
+    }
+
+    #closeBtn:hover {
+        background: #d93636;
+    }
+
+</style>
+</head>
+<body>
+
+<h1>Paint View</h1>
+
+
+<div class="gallery">
+
+    <figure onclick="openModal(0)">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-3nDT3jXJuIefFXZaC6fJY9PL_PNIs6UCjg&s">
+        <figcaption>Mona Lisa Painting</figcaption>
+    </figure>
+
+    <figure onclick="openModal(1)">
+        <img src="https://media.beliefnet.com/~/media/photos-with-attribution/faiths/001/last%20supper%20_%20public%20domain%20wikimedia%20commons.jpg">
+        <figcaption>The Last Supper</figcaption>
+    </figure>
+
+    <figure onclick="openModal(2)">
+        <img src="https://m.media-amazon.com/images/I/91PeFpf5NNL._AC_UF894,1000_QL80_.jpg">
+        <figcaption>Starry Night</figcaption>
+    </figure>
+
+    <figure onclick="openModal(3)">
+        <img src="https://cdn.shopify.com/s/files/1/0625/3818/6989/files/2_5acf9bab-5dd3-4e04-b42c-d4985ccda17b.jpg?v=1676615530">
+        <figcaption>Modern Art</figcaption>
+    </figure>
+
+    <figure onclick="openModal(4)">
+        <img src="https://pbs.twimg.com/media/CezNOauWAAEVbkL.jpg">
+        <figcaption>Karthi's Masterpiece</figcaption>
+    </figure>
+
+    <figure onclick="openModal(5)">
+        <img src="https://pbs.twimg.com/media/Fye6MGNXoAEJsff.png">
+        <figcaption>Chandhramukhi</figcaption>
+    </figure>
+
+    <figure onclick="openModal(6)">
+        <img src="https://i.pinimg.com/736x/2b/d2/12/2bd2124d159714832d57209009c3b25c.jpg">
+        <figcaption>The most Beautiful Indian Woman</figcaption>
+    </figure>
+
+    <figure onclick="openModal(7)">
+        <img src="https://webneel.com/daily/sites/default/files/images/daily/06-2015/13-realistic-tamil-woman-painting-by-ilayaraja.preview.jpg">
+        <figcaption>Tamil girl</figcaption>
+    </figure>
+
+    <figure onclick="openModal(8)">
+        <img src="https://i.pinimg.com/736x/1e/e5/1a/1ee51a46ecfabff2f6e3a649ceb3ae54.jpg">
+        <figcaption>Oil Painting</figcaption>
+    </figure>
+
+</div>
+
+<!-- Modal for full view -->
+<div class="modal" id="modal">
+    <img id="modalImg">
+    <div class="modal-caption" id="modalCaption"></div>
+
+    <div class="controls">
+        <button onclick="prevImg()">Previous</button>
+        <button onclick="nextImg()">Next</button>
+    </div>
+
+    <button id="closeBtn" onclick="closeModal()">Back to Gallery</button>
+</div>
+
+<script>
+    const images = [
+        {
+            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-3nDT3jXJuIefFXZaC6fJY9PL_PNIs6UCjg&s",
+            name: "Mona Lisa Painting"
+        },
+        {
+            url: "https://media.beliefnet.com/~/media/photos-with-attribution/faiths/001/last%20supper%20_%20public%20domain%20wikimedia%20commons.jpg",
+            name: "The Last Supper"
+        },
+        {
+            url: "https://m.media-amazon.com/images/I/91PeFpf5NNL.AC_UF894,1000_QL80.jpg",
+            name: "Starry Night"
+        },
+        {
+            url: "https://cdn.shopify.com/s/files/1/0625/3818/6989/files/2_5acf9bab-5dd3-4e04-b42c-d4985ccda17b.jpg?v=1676615530",
+            name: "Modern Art"
+        },
+        {
+            url: "https://pbs.twimg.com/media/CezNOauWAAEVbkL.jpg",
+            name: "Karthi's Master Piece"
+        },
+        {
+            url: "https://pbs.twimg.com/media/Fye6MGNXoAEJsff.png",
+            name: "Chandhramukhi"
+        },
+        {
+            url: "https://i.pinimg.com/736x/2b/d2/12/2bd2124d159714832d57209009c3b25c.jpg",
+            name: "The most Beautiful Indian Woman"
+        },
+        {
+            url: "https://webneel.com/daily/sites/default/files/images/daily/06-2015/13-realistic-tamil-woman-painting-by-ilayaraja.preview.jpg",
+            name: "Tamil girl"
+        },
+        {
+            url: "https://i.pinimg.com/736x/1e/e5/1a/1ee51a46ecfabff2f6e3a649ceb3ae54.jpg",
+            name: "Oil Painting"
+        }
+    ];
+
+    let index = 0;
+
+    function openModal(i) {
+        index = i;
+        document.getElementById("modalImg").src = images[index].url;
+        document.getElementById("modalCaption").innerText = images[index].name;
+        document.getElementById("modal").style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("modal").style.display = "none";
+    }
+
+    function nextImg() {
+        index = (index + 1) % images.length;
+        openModal(index);
+    }
+
+    function prevImg() {
+        index = (index - 1 + images.length) % images.length;
+        openModal(index);
+    }
+</script>
+
+</body>
+</html>
